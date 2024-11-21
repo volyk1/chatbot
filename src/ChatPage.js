@@ -7,9 +7,7 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const API_KEY_1 = 'a124bff64a4743e8a65045b11cce1dfc';
-  const API_ENDPOINT = 'https://ksust4.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview';
-
+  // Логіка API запиту, зміни вносимо тут
   const callApi = async (userInput) => {
     try {
       setLoading(true);
@@ -19,11 +17,11 @@ const Chat = () => {
       }));
       context.push({ role: 'user', content: userInput });
 
-      const response = await fetch(API_ENDPOINT, {
+      // Запит до проксі-сервера
+      const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'api-key': API_KEY_1,
         },
         body: JSON.stringify({
           messages: context,
@@ -54,8 +52,8 @@ const Chat = () => {
 
     const userMessage = { sender: 'user', text: input };
     setMessages([...messages, userMessage]);
-    setInput('');
-    document.querySelector('input').focus();
+    setInput('');  // Очищення поля вводу
+    document.querySelector('input').focus();  // Фокус на полі вводу
 
     const botResponse = await callApi(input);
     const botMessage = { sender: 'bot', text: botResponse };
@@ -69,7 +67,6 @@ const Chat = () => {
     }
   };
 
-  // Очищення історії чату
   const handleClearHistory = () => {
     setMessages([]);
   };
@@ -117,5 +114,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
-
