@@ -121,6 +121,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Напівпрозорий фон для логотипа */
+  background-blend-mode: lighten; /* Застосовуємо режим змішування для кращого вигляду */
 }
 
 @media (max-width: 768px) {
