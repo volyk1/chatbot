@@ -69,28 +69,30 @@ const Chat = () => {
     }
   };
 
+  // Очищення історії чату
+  const handleClearHistory = () => {
+    setMessages([]);
+  };
+
   return (
     <div className="chat-container">
       <div className="chat-box">
         {messages.map((msg, index) => (
           <div key={index} className={`chat-message ${msg.sender}`}>
             {msg.sender === 'bot' ? (
-              // Для повідомлень бота рендеримо формули через KaTeX
-              msg.text.split('\n').map((paragraph, index) => {
-                return (
-                  <p key={index}>
-                    {paragraph.includes('$') ? (
-                      <BlockMath>{paragraph}</BlockMath>
-                    ) : (
-                      paragraph
-                    )}
-                  </p>
-                );
-              })
+              msg.text.split('\n').map((paragraph, index) => (
+                <p key={index}>
+                  {paragraph.includes('$') ? (
+                    <BlockMath>{paragraph}</BlockMath>
+                  ) : (
+                    paragraph
+                  )}
+                </p>
+              ))
             ) : (
-              msg.text
-                .split('\n')
-                .map((paragraph, index) => <p key={index}>{paragraph.trim()}</p>)
+              msg.text.split('\n').map((paragraph, index) => (
+                <p key={index}>{paragraph.trim()}</p>
+              ))
             )}
           </div>
         ))}
@@ -105,13 +107,15 @@ const Chat = () => {
           onKeyPress={handleKeyPress}
         />
         <button onClick={handleSendMessage}>Відправити</button>
+        {/* Кнопка для очищення історії */}
+        <button className="clear-history-button" onClick={handleClearHistory}>
+          Clear
+        </button>
       </div>
     </div>
   );
 };
 
 export default Chat;
-
-
 
 
