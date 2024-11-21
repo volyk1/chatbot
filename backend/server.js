@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -33,6 +33,7 @@ app.post('/api/chat', async (req, res) => {
     });
 
     if (!response.ok) {
+      console.error(`Azure API error: ${response.statusText}`);  // Додано логування для помилок
       return res.status(response.status).json({ error: 'Azure API error' });
     }
 
