@@ -10,7 +10,7 @@ import fs from 'fs';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 5001; 
 
 // Налаштування CORS
 const allowedOrigins = [
@@ -79,11 +79,9 @@ if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));
   });
-}
+} 
 
 // Запуск сервера
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
-
-
+}); 
