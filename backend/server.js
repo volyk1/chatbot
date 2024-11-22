@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 const API_KEY = process.env.AZURE_API_KEY;
 const API_ENDPOINT = process.env.AZURE_API_ENDPOINT;
 
+// Обробка API запитів
 app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
 
@@ -33,7 +35,7 @@ app.post('/api/chat', async (req, res) => {
     });
 
     if (!response.ok) {
-      console.error(`Azure API error: ${response.statusText}`);  // Додано логування для помилок
+      console.error(`Azure API error: ${response.statusText}`);
       return res.status(response.status).json({ error: 'Azure API error' });
     }
 
@@ -45,6 +47,18 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// Статичні файли для продакшн середовища
+if (process.env.NODE_ENV === 'production') {
+  // Вказуємо Express, щоб він обслуговував файли з папки build
+  app.use(express.static(path.join(__dirname, 'build')));
+
+  // Для всіх інших запитів віддаємо index.html, щоб працювала маршрутизація у React
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+}
+
+// Запуск сервера
 app.listen(PORT, () => {
   console.log(`Backend proxy running on port ${PORT}`);
 });
