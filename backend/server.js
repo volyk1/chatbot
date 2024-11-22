@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
 import cors from 'cors';
-import dotenv from 'dotenv'; 
+import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
@@ -10,23 +10,32 @@ import fs from 'fs';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001; 
+const PORT = process.env.PORT || 5001;
 
 // Налаштування CORS
-const allowedOrigins = [
-  'https://chatbot-oi96.onrender.com', // Домен Render
-  'http://localhost:3000' // Для локальної розробки
-];
+app.use(cors()); // Дозволити всі домени для тестування
+// Після тестування можна повернути обмеження:
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     const allowedOrigins = [
+//       'https://chatbot-oi96.onrender.com', // Домен Render
+//       'http://localhost:3000' // Для локальної розробки
+//     ];
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   }
+// }));
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-}));
+// Перевірка змінних середовища
+if (!process.env.AZURE_API_ENDPOINT || !process.env.AZURE_API_KEY) {
+  console.error('Azure API credentials are missing!'); // Виведення помилки
+  process.exit(1); // Зупинка виконання, якщо змінні не завантажені
+} else {
+  console.log('Environment variables loaded successfully.');
+}
 
 // Налаштування body-parser
 app.use(bodyParser.json());
@@ -83,5 +92,5 @@ if (process.env.NODE_ENV === 'production') {
 
 // Запуск сервера
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-}); 
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
