@@ -7,7 +7,7 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Логіка API запиту, зміни вносимо тут
+  // Логіка API запиту
   const callApi = async (userInput) => {
     try {
       setLoading(true);
@@ -15,10 +15,10 @@ const Chat = () => {
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.text,
       }));
-      context.push({ role: 'user', content: userInput }); 
+      context.push({ role: 'user', content: userInput });
 
-      // Запит до проксі-сервера
-      const response = await fetch('http://localhost:8000/api/chat', {
+      // Запит до вашого API (не забудьте оновити URL)
+      const response = await fetch('https://your-backend-url.com/api/chat', { // Заміна на правильний URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ const Chat = () => {
               msg.text.split('\n').map((paragraph, index) => (
                 <p key={index}>
                   {paragraph.includes('$') ? (
-                    <BlockMath>{paragraph}</BlockMath>
+                    <BlockMath>{paragraph}</BlockMath> // Якщо текст містить '$', рендеримо як математичну формулу
                   ) : (
                     paragraph
                   )}
