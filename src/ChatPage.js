@@ -18,7 +18,7 @@ const Chat = () => {
       context.push({ role: 'user', content: userInput }); 
 
       // Запит до проксі-сервера
-      const response = await fetch('http://localhost:5002/api/chat', {
+      const response = await fetch('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
