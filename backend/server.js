@@ -6,12 +6,29 @@ import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
+// Завантаження змінних середовища
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5002;
 
-app.use(cors());
+// Налаштування CORS
+const allowedOrigins = [
+  'https://chatbot-oi96.onrender.com', // Домен Render
+  'http://localhost:3000' // Для локальної розробки
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
+// Налаштування body-parser
 app.use(bodyParser.json());
 
 // Обробка API запитів
@@ -19,6 +36,9 @@ app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
 
   try {
+    // Логування запиту для перевірки
+    console.log('Received messages:', messages);
+
     const response = await fetch(process.env.AZURE_API_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -48,21 +68,22 @@ app.post('/api/chat', async (req, res) => {
 // Статичні файли для продакшн середовища
 if (process.env.NODE_ENV === 'production') {
   const buildPath = path.join(__dirname, 'build');
-  
+
   if (!fs.existsSync(buildPath)) {
     console.error('Build folder is missing.');
     process.exit(1);
   }
 
   app.use(express.static(buildPath));
-  
+
   app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
 
-// Лог запуску сервера
-app.listen(PORT, () => {
+// Запуск сервера
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
+
 
