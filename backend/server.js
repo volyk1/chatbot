@@ -17,6 +17,7 @@ app.use(cors({
   origin: [
     'https://chatbot-oi96.onrender.com', // Домен сервера
     'http://localhost:3000', // Для локальної розробки
+    'https://chatbot-ashen-zeta.vercel.app',// Домен фронтенду на Vercel
   ],
 }));
 
