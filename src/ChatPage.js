@@ -18,7 +18,7 @@ const Chat = () => {
       context.push({ role: 'user', content: userInput });
 
       // Запит до вашого API (не забудьте оновити URL)
-      const response = await fetch('https://chatbot-oi96.onrender.com', { // Заміна на правильний URL
+      const response = await fetch('https://chatbot-oi96.onrender.com/api/chat', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
