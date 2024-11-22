@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -13,19 +14,16 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(bodyParser.json());
 
-const API_KEY = process.env.AZURE_API_KEY;
-const API_ENDPOINT = process.env.AZURE_API_ENDPOINT;
-
 // Обробка API запитів
 app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
 
   try {
-    const response = await fetch(API_ENDPOINT, {
+    const response = await fetch(process.env.AZURE_API_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': API_KEY,
+        'api-key': process.env.AZURE_API_KEY,
       },
       body: JSON.stringify({
         messages,
@@ -49,17 +47,22 @@ app.post('/api/chat', async (req, res) => {
 
 // Статичні файли для продакшн середовища
 if (process.env.NODE_ENV === 'production') {
-  // Вказуємо Express, щоб він обслуговував файли з папки build
-  app.use(express.static(path.join(__dirname, 'build')));
+  const buildPath = path.join(__dirname, 'build');
+  
+  if (!fs.existsSync(buildPath)) {
+    console.error('Build folder is missing.');
+    process.exit(1);
+  }
 
-  // Для всіх інших запитів віддаємо index.html, щоб працювала маршрутизація у React
+  app.use(express.static(buildPath));
+  
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
 
-// Запуск сервера
+// Лог запуску сервера
 app.listen(PORT, () => {
-  console.log(`Backend proxy running on port ${PORT}`);
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 
