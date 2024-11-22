@@ -15,7 +15,7 @@ const Chat = () => {
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.text,
       }));
-      context.push({ role: 'user', content: userInput });
+      context.push({ role: 'user', content: userInput }); 
 
       // Запит до проксі-сервера
       const response = await fetch('http://localhost:5002/api/chat', {
