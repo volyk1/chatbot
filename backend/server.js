@@ -13,21 +13,12 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Налаштування CORS
-app.use(cors()); // Дозволити всі домени для тестування
-// Після тестування можна повернути обмеження:
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     const allowedOrigins = [
-//       'https://chatbot-oi96.onrender.com', // Домен Render
-//       'http://localhost:3000' // Для локальної розробки
-//     ];
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   }
-// }));
+app.use(cors({
+  origin: [
+    'https://chatbot-oi96.onrender.com', // Домен сервера
+    'http://localhost:3000', // Для локальної розробки
+  ],
+}));
 
 // Перевірка змінних середовища
 if (!process.env.AZURE_API_ENDPOINT || !process.env.AZURE_API_KEY) {
